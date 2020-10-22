@@ -329,11 +329,11 @@ public class Sudoku {
 			int primCol;
 
 			//Verifico si se repiten los numeros entre los paneles
-			while(filaInicial<this.cantFilas) {
-				while(colInicial<this.cantFilas) {
+			while(filaInicial<this.cantFilas && esValida) {
+				while(colInicial<this.cantFilas && esValida) {
 
-					for(int i=filaInicial ; i<filaInicial+3; i++) {
-						for(int j=colInicial ; j<colInicial+3 ; j++) {
+					for(int i=filaInicial ; i<filaInicial+3 && esValida ; i++) {
+						for(int j=colInicial ; j<colInicial+3 && esValida ; j++) {
 
 							if(j<colInicial+2) {
 								primFil = i;
@@ -344,8 +344,8 @@ public class Sudoku {
 								primCol = colInicial;
 							}
 
-							for(int k=primFil ; k<filaInicial+3 ; k++) {
-								for(int l=primCol ; l<colInicial+3 ; l++) {
+							for(int k=primFil ; k<filaInicial+3 && esValida ; k++) {
+								for(int l=primCol ; l<colInicial+3 && esValida ; l++) {
 
 									if(entrada[i][j] == entrada[k][l])
 										esValida = false;
