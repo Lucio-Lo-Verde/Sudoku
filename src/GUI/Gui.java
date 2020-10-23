@@ -205,25 +205,32 @@ public class Gui extends JFrame {
 	
 	private void agregarBotonNumerico(int indice) {
 
-		JButton btn = new JButton(indice + "");
+		JButton btn = new JButton();
+		btn.setActionCommand(indice + "");
 		btn.addActionListener(new buttonListener());
 		contentPane.add(btn);
-
+		
+		ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/" + indice + ".png"));
+		agregarIcono(btn, icon);
+	}
+	
+	private void agregarIcono(JButton btn, ImageIcon icon) {
+		
 		btn.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				
-				ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/" + indice + ".png"));
 				btn.setIcon(icon);
 				Image image = icon.getImage();
 				if (image != null) {
 					Image newImg = image.getScaledInstance((int) btn.getSize().getWidth(), (int) btn.getSize().getHeight(),  java.awt.Image.SCALE_SMOOTH);
+					btn.setVerticalTextPosition(SwingConstants.CENTER);
+				    btn.setHorizontalTextPosition(SwingConstants.CENTER);
 					icon.setImage(newImg);
 					btn.repaint();
 				}
 			}
 		});
-
 	}
 
 	private void reDimensionar(JLabel label, ImageIcon grafico) {
