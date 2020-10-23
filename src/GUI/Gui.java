@@ -62,19 +62,22 @@ public class Gui extends JFrame {
 	 */
 	public Gui() {
 		this.setTitle("Sudoku");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);	
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		setBounds(100, 100, ancho, largo);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setBackground(Color.YELLOW);
+		contentPane.setBackground(Color.BLACK);
 		
+		agregarSeparador();
 		
-		for(int i=0 ; i<2 ; i++) {
-	    	JLabel separadorEnConj = new JLabel();
-			contentPane.add(separadorEnConj);
-	    }
+		JLabel texto = new JLabel();
+		contentPane.add(texto);
+		texto.setText("Time:");
+		texto.setForeground(Color.RED);
+		
+		agregarSeparador();
 	    
 	    ImageIcon icono0 = new ImageIcon(this.getClass().getResource("/img/0.png"));
 	    ImageIcon iconoDosPuntos = new ImageIcon(this.getClass().getResource("/img/dosPuntos.png"));
@@ -107,14 +110,16 @@ public class Gui extends JFrame {
 		TimerTask tarea = new Reloj(this.temporizador, decenaHoras, unidadHoras, decenaMinutos, unidadMinutos, decenaSegundos, unidadSegundos);
 		this.temporizador.schedule(tarea,0,1000);
 		
-		for(int i=0 ; i<2 ; i++) {
-	    	JLabel separadorEnConj = new JLabel();
-			contentPane.add(separadorEnConj);
-	    }
+		agregarSeparador();
+		
+		JLabel texto1 = new JLabel();
+		contentPane.add(texto1);
+		texto1.setText("Selec:");
+		texto1.setForeground(Color.RED);
 		
 		this.numSeleccionado = 1;
 		sudoku = new Sudoku();
-		contentPane.setLayout(new GridLayout(sudoku.getCantFilas()+3, sudoku.getCantFilas()+3, 0, 0));
+		contentPane.setLayout(new GridLayout(sudoku.getCantFilas()+3, sudoku.getCantFilas()+4, 0, 0));
 		
 		this.labelsNumeros = new JLabel[sudoku.getCantFilas()][sudoku.getCantFilas()];
 		int boton = 1;
@@ -154,28 +159,43 @@ public class Gui extends JFrame {
 					}
 					
 			}
-			if(boton<=9)
+			
+			ImageIcon linea = new ImageIcon(this.getClass().getResource("/img/linVert.png"));
+			
+			if(boton<=9) {
+				agregarSeparador(linea);
+				
 				agregarBotonNumerico(boton);
+			}
 			else if(boton==11) {
+				agregarSeparador(linea);
+				
 				JButton btnVerificar = new JButton("Verificar");
 				btnVerificar.addActionListener(new buttonListener());
 			    contentPane.add(btnVerificar);
 			}
 			else {
-				JLabel separador = new JLabel();
-				contentPane.add(separador);
+				agregarSeparador(linea);
+				JLabel texto2 = new JLabel();
+				contentPane.add(texto2);
+				texto2.setText("Verific:");
+				texto2.setForeground(Color.RED);
 			}
 			boton ++;
 			
 			if((i+1)%3 == 0 && i<sudoku.getCantFilas()-1) {
-				ImageIcon linea = new ImageIcon(this.getClass().getResource("/img/linHor.png"));
+				ImageIcon lineaH = new ImageIcon(this.getClass().getResource("/img/linHor.png"));
 				ImageIcon cruz = new ImageIcon(this.getClass().getResource("/img/cruz.png"));
 				for(int k=0 ; k<sudoku.getCantFilas()+2 ; k++) {
 					if(k==3 || k==7)
 						agregarSeparador(cruz);
 					else
-						agregarSeparador(linea);
+						agregarSeparador(lineaH);
 				}
+				
+				ImageIcon intersec = new ImageIcon(this.getClass().getResource("/img/intersec.png"));
+				
+				agregarSeparador(intersec);
 				agregarBotonNumerico(boton);
 			    boton ++;
 			}
@@ -189,7 +209,6 @@ public class Gui extends JFrame {
 		btn.addActionListener(new buttonListener());
 		contentPane.add(btn);
 
-		/*
 		btn.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
@@ -204,7 +223,6 @@ public class Gui extends JFrame {
 				}
 			}
 		});
-		*/
 
 	}
 
@@ -246,6 +264,11 @@ public class Gui extends JFrame {
 			}
 		});
 		
+	}
+	
+	private void agregarSeparador() {
+		JLabel separador = new JLabel();
+		contentPane.add(separador);
 	}
 
 	

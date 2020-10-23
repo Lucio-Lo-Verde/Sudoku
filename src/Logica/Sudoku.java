@@ -36,7 +36,7 @@ public class Sudoku {
 			logger.setLevel(Level.INFO);
 		}
 
-		File file = new File("C:\\Users\\Lucio\\Desktop\\workspace\\Sudoku3\\src\\solucion.txt"); //Introduzca la ruta del archivo tablero.txt
+		File file = new File("C:\\Users\\Lucio\\Desktop\\workspace\\Sudoku4\\src\\solucion.txt"); //Introduzca la ruta del archivo tablero.txt
 		Scanner sc;
 		int [][] entrada = new int [this.cantFilas][this.cantFilas];
 		int cantLineasFile = 0;
