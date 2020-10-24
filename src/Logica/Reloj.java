@@ -26,6 +26,8 @@ public class Reloj extends TimerTask {
 
 	private ImageIcon [] iconos;
 
+	private boolean run;
+
 
 	public Reloj(Timer t, JLabel decenaHoras, JLabel unidadHoras, JLabel decenaMinutos, JLabel unidadMinutos, JLabel decenaSegundos, JLabel unidadSegundos){
 		this.temporizador = t;
@@ -38,6 +40,7 @@ public class Reloj extends TimerTask {
 		this.unidadMinutos = unidadMinutos;
 		this.decenaSegundos = decenaSegundos;
 		this.unidadSegundos = unidadSegundos;
+		this.run = false; //Determina si incremento la cuenta del timer
 
 		this.iconos = new ImageIcon[10];
 
@@ -45,57 +48,70 @@ public class Reloj extends TimerTask {
 			this.iconos[i] = new ImageIcon(this.getClass().getResource("/img/" + i + ".png"));
 			reDimensionar(unidadSegundos, this.iconos[i]);
 		}
-
 	}
 
 	@Override
 	public void run() {
 
 		//Cada vez que pase un segundo
-		this.segundosPasados ++;
-		unidadSegundos.setIcon(iconos[segundosPasados%10]);
+		if(run) {
+			this.segundosPasados ++;
+			unidadSegundos.setIcon(iconos[segundosPasados%10]);
 
-		//Cada vez que pasen 10 segundos
-		if(segundosPasados%10 == 0 && segundosPasados<60 && segundosPasados>=10) {
-			decenaSegundos.setIcon(iconos[segundosPasados/10]);
-		}
-		//Cada vez que pase un minuto
-		else if(minutosPasados<59 && segundosPasados==60) {
-			minutosPasados ++;
-			segundosPasados = 0;
+			//Cada vez que pasen 10 segundos
+			if(segundosPasados%10 == 0 && segundosPasados<60 && segundosPasados>=10) {
+				decenaSegundos.setIcon(iconos[segundosPasados/10]);
+			}
+			//Cada vez que pase un minuto
+			else if(minutosPasados<59 && segundosPasados==60) {
+				minutosPasados ++;
+				segundosPasados = 0;
 
-			//Cada vez que pasen 10 minutos
-			if(minutosPasados>=10 && minutosPasados%10 == 0) {
-				decenaMinutos.setIcon(iconos[minutosPasados/10]);
+				//Cada vez que pasen 10 minutos
+				if(minutosPasados>=10 && minutosPasados%10 == 0) {
+					decenaMinutos.setIcon(iconos[minutosPasados/10]);
+				}
+
+				unidadMinutos.setIcon(iconos[minutosPasados%10]);
+
+				decenaSegundos.setIcon(iconos[0]);
+			}
+			//Cada vez que pase una hora
+			else if(minutosPasados==59 && segundosPasados==60) {
+				horasPasadas ++;
+				minutosPasados = 0;
+				segundosPasados = 0;
+
+				//Cada vez que pasen 10 horas
+				if(horasPasadas>=10 && horasPasadas%10 == 0) {
+					decenaHoras.setIcon(iconos[horasPasadas/10]);
+				}
+
+				unidadHoras.setIcon(iconos[horasPasadas%10]);
+
+				decenaMinutos.setIcon(iconos[0]);
+
+				unidadMinutos.setIcon(iconos[0]);
+
+				decenaSegundos.setIcon(iconos[0]);
 			}
 
-			unidadMinutos.setIcon(iconos[minutosPasados%10]);
-
-			decenaSegundos.setIcon(iconos[0]);
-		}
-		//Cada vez que pase una hora
-		else if(minutosPasados==59 && segundosPasados==60) {
-			horasPasadas ++;
-			minutosPasados = 0;
-			segundosPasados = 0;
-
-			//Cada vez que pasen 10 horas
-			if(horasPasadas>=10 && horasPasadas%10 == 0) {
-				decenaHoras.setIcon(iconos[horasPasadas/10]);
-			}
-
-			unidadHoras.setIcon(iconos[horasPasadas%10]);
-
-			decenaMinutos.setIcon(iconos[0]);
-
-			unidadMinutos.setIcon(iconos[0]);
-
-			decenaSegundos.setIcon(iconos[0]);
+			if(horasPasadas==23 && minutosPasados==59 && segundosPasados==59)
+				temporizador.cancel();
 		}
 
-		if(horasPasadas==23 && minutosPasados==59 && segundosPasados==59)
-			temporizador.cancel();
+	}
 
+	public boolean isRunning() {
+		return run;
+	}
+
+	public void empezar() {
+		this.run = true;
+	}
+
+	public void pausar() {
+		this.run = false;
 	}
 
 	private void reDimensionar(JLabel label, ImageIcon grafico) {
@@ -111,7 +127,5 @@ public class Reloj extends TimerTask {
 				}
 			}
 		});
-
 	}
-
 }
