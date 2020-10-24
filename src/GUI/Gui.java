@@ -40,6 +40,8 @@ public class Gui extends JFrame {
 	private static final int largo = 800;
 	private int numSeleccionado;
 	private Timer temporizador;
+	private TimerTask tarea;
+	private JLabel inicio;
 
 	/**
 	 * Launch the application.
@@ -65,15 +67,19 @@ public class Gui extends JFrame {
 
 		this.setTitle("Sudoku");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+		ImageIcon icon = new ImageIcon(this.getClass().getResource("/img/space.jpg"));
+		Image image = icon.getImage();
 
 		setBounds(100, 100, ancho, largo);
+		setContentPane(new ImagePanel(image));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setBackground(Color.BLACK);
-
+		
 		sudoku = new Sudoku();
 		contentPane.setLayout(new GridLayout(sudoku.getCantFilas()+4, sudoku.getCantFilas()+4, 0, 0));
+		contentPane.setBackground(Color.BLACK);
 
 		ImageIcon intersec = new ImageIcon(this.getClass().getResource("/img/intersec2.png"));
 		ImageIcon linea = new ImageIcon(this.getClass().getResource("/img/linHor.png"));
@@ -85,8 +91,6 @@ public class Gui extends JFrame {
 		contentPane.add(texto);
 		texto.setText("Time:");
 		texto.setForeground(Color.RED);
-
-		agregarSeparador();
 
 		ImageIcon icono0 = new ImageIcon(this.getClass().getResource("/img/0.png"));
 		ImageIcon iconoDosPuntos = new ImageIcon(this.getClass().getResource("/img/dosPuntos.png"));
@@ -116,7 +120,17 @@ public class Gui extends JFrame {
 		agregarImagen(unidadSegundos, icono0);
 
 		agregarSeparador();
-		agregarSeparador();
+
+		this.inicio = new JLabel();
+		contentPane.add(this.inicio);
+		this.inicio.setText("START");
+		this.inicio.setForeground(Color.GREEN);
+
+		JButton btnGo = new JButton();
+		btnGo.setActionCommand("GO!");
+		btnGo.addActionListener(new buttonListener());
+		contentPane.add(btnGo);
+		agregarIcono(btnGo, new ImageIcon(this.getClass().getResource("/img/go.png")));
 
 		for(int i=0 ; i<sudoku.getCantFilas()+3 ; i++) {
 
@@ -146,6 +160,7 @@ public class Gui extends JFrame {
 
 				this.labelsNumeros[i][j] = label;
 				contentPane.add(label);
+				label.setVisible(false);
 
 				label.addComponentListener(new ComponentAdapter() {
 					@Override
@@ -217,8 +232,7 @@ public class Gui extends JFrame {
 
 		}
 		this.temporizador = new Timer();
-		TimerTask tarea = new Reloj(this.temporizador, decenaHoras, unidadHoras, decenaMinutos, unidadMinutos, decenaSegundos, unidadSegundos);
-		this.temporizador.schedule(tarea,0,1000);
+		this.tarea = new Reloj(this.temporizador, decenaHoras, unidadHoras, decenaMinutos, unidadMinutos, decenaSegundos, unidadSegundos);
 	}
 
 	private void agregarBotonNumerico(int indice) {
@@ -301,7 +315,7 @@ public class Gui extends JFrame {
 		@Override
 		public void actionPerformed (ActionEvent e) {
 
-			JButton boton;
+			JButton boton = new JButton();
 			String src = new String();
 
 			try {
@@ -336,6 +350,18 @@ public class Gui extends JFrame {
 				}
 				else
 					JOptionPane.showMessageDialog(null, "Por favor complete todas las casillas antes de verificar", "Verificacion del resultado", JOptionPane.INFORMATION_MESSAGE);
+			}
+			else if(src == "GO!") {
+
+				for(int i=0 ; i<sudoku.getCantFilas() ; i++)
+					for(int j=0 ; j<sudoku.getCantFilas() ; j++)
+						labelsNumeros[i][j].setVisible(true);
+
+				temporizador.schedule(tarea,0,1000);
+
+				boton.setVisible(false);
+				inicio.setVisible(false);
+
 			}
 			else if(src.equals("1") || src.equals("2") || src.equals("3") || src.equals("4") || src.equals("5") || src.equals("6") || src.equals("7") || src.equals("8") || src.equals("9")){
 
