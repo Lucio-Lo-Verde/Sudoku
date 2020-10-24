@@ -1,6 +1,8 @@
 package Logica;
 
 import java.awt.Image;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +24,8 @@ public class Reloj extends TimerTask {
 	private JLabel unidadMinutos;
 	private JLabel unidadSegundos;
 
+	private ImageIcon [] iconos;
+
 
 	public Reloj(Timer t, JLabel decenaHoras, JLabel unidadHoras, JLabel decenaMinutos, JLabel unidadMinutos, JLabel decenaSegundos, JLabel unidadSegundos){
 		this.temporizador = t;
@@ -34,75 +38,60 @@ public class Reloj extends TimerTask {
 		this.unidadMinutos = unidadMinutos;
 		this.decenaSegundos = decenaSegundos;
 		this.unidadSegundos = unidadSegundos;
+
+		this.iconos = new ImageIcon[10];
+
+		for(int i=0 ; i<10 ; i++) {
+			this.iconos[i] = new ImageIcon(this.getClass().getResource("/img/" + i + ".png"));
+			reDimensionar(unidadSegundos, this.iconos[i]);
+		}
+
 	}
 
 	@Override
 	public void run() {
 
-		ImageIcon imageIcon;
+		//Cada vez que pase un segundo
+		this.segundosPasados ++;
+		unidadSegundos.setIcon(iconos[segundosPasados%10]);
 
-		//Cada vez que pasen un segundo
-		if(segundosPasados<59){
-			this.segundosPasados ++;
-
-			//Cada vez que pasen 10 segundos
-			if(segundosPasados>=10 && segundosPasados%10 == 0) {
-				imageIcon = new ImageIcon(this.getClass().getResource("/img/" + segundosPasados/10 + ".png"));
-				decenaSegundos.setIcon(imageIcon);
-				reDimensionar(decenaSegundos, imageIcon);
-			}
+		//Cada vez que pasen 10 segundos
+		if(segundosPasados%10 == 0 && segundosPasados<60 && segundosPasados>=10) {
+			decenaSegundos.setIcon(iconos[segundosPasados/10]);
 		}
 		//Cada vez que pase un minuto
-		else if(minutosPasados<59 && segundosPasados==59) {
+		else if(minutosPasados<59 && segundosPasados==60) {
 			minutosPasados ++;
 			segundosPasados = 0;
 
 			//Cada vez que pasen 10 minutos
 			if(minutosPasados>=10 && minutosPasados%10 == 0) {
-				imageIcon = new ImageIcon(this.getClass().getResource("/img/" + minutosPasados/10 + ".png"));
-				decenaMinutos.setIcon(imageIcon);
-				reDimensionar(decenaMinutos, imageIcon);
+				decenaMinutos.setIcon(iconos[minutosPasados/10]);
 			}
 
-			imageIcon = new ImageIcon(this.getClass().getResource("/img/" + minutosPasados%10 + ".png"));
-			unidadMinutos.setIcon(imageIcon);
-			reDimensionar(unidadMinutos, imageIcon);
+			unidadMinutos.setIcon(iconos[minutosPasados%10]);
 
-			imageIcon = new ImageIcon(this.getClass().getResource("/img/0.png"));
-			decenaSegundos.setIcon(imageIcon);
-			reDimensionar(decenaSegundos, imageIcon);
+			decenaSegundos.setIcon(iconos[0]);
 		}
 		//Cada vez que pase una hora
-		else if(minutosPasados == 59 && segundosPasados == 59) {
+		else if(minutosPasados==59 && segundosPasados==60) {
 			horasPasadas ++;
 			minutosPasados = 0;
 			segundosPasados = 0;
 
 			//Cada vez que pasen 10 horas
 			if(horasPasadas>=10 && horasPasadas%10 == 0) {
-				imageIcon = new ImageIcon(this.getClass().getResource("/img/" + horasPasadas/10 + ".png"));
-				decenaHoras.setIcon(imageIcon);
-				reDimensionar(decenaHoras, imageIcon);
+				decenaHoras.setIcon(iconos[horasPasadas/10]);
 			}
 
-			imageIcon = new ImageIcon(this.getClass().getResource("/img/" + horasPasadas%10 + ".png"));
-			unidadHoras.setIcon(imageIcon);
-			reDimensionar(unidadHoras, imageIcon);
+			unidadHoras.setIcon(iconos[horasPasadas%10]);
 
-			imageIcon = new ImageIcon(this.getClass().getResource("/img/0.png"));
-			decenaMinutos.setIcon(imageIcon);
-			reDimensionar(decenaMinutos, imageIcon);
+			decenaMinutos.setIcon(iconos[0]);
 
-			unidadMinutos.setIcon(imageIcon);
-			reDimensionar(unidadMinutos, imageIcon);
+			unidadMinutos.setIcon(iconos[0]);
 
-			decenaSegundos.setIcon(imageIcon);
-			reDimensionar(decenaSegundos, imageIcon);
+			decenaSegundos.setIcon(iconos[0]);
 		}
-
-		imageIcon = new ImageIcon(this.getClass().getResource("/img/" + segundosPasados%10 + ".png"));
-		unidadSegundos.setIcon(imageIcon);
-		reDimensionar(unidadSegundos, imageIcon);
 
 		if(horasPasadas==23 && minutosPasados==59 && segundosPasados==59)
 			temporizador.cancel();
@@ -110,13 +99,19 @@ public class Reloj extends TimerTask {
 	}
 
 	private void reDimensionar(JLabel label, ImageIcon grafico) {
-		Image image = grafico.getImage();
-		if (image != null) {  
-			Image newimg = image.getScaledInstance(label.getWidth(), label.getHeight(),  java.awt.Image.SCALE_SMOOTH);
-			grafico.setImage(newimg);
-			label.repaint();
 
-		}
+		label.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent e) {
+
+				Image image = grafico.getImage();
+				if (image != null) {
+					Image newImg = image.getScaledInstance(label.getWidth(), label.getHeight(),  java.awt.Image.SCALE_SMOOTH);
+					grafico.setImage(newImg);
+				}
+			}
+		});
+
 	}
 
 }
