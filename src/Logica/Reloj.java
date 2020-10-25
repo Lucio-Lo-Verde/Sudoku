@@ -44,6 +44,7 @@ public class Reloj extends TimerTask {
 
 		this.iconos = new ImageIcon[10];
 
+		//Inserto los iconos del 0 al 9 en el arreglo de ImageIcon iconos
 		for(int i=0 ; i<10 ; i++) {
 			this.iconos[i] = new ImageIcon(this.getClass().getResource("/img/" + i + ".png"));
 			reDimensionar(unidadSegundos, this.iconos[i]);

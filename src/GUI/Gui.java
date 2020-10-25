@@ -37,7 +37,7 @@ public class Gui extends JFrame {
 	private JLabel [][] labelsNumeros;
 	private Sudoku sudoku;
 	private static final int ancho = 600;
-	private static final int largo = 800;
+	private static final int largo = 700;
 	private int numSeleccionado;
 	private Timer temporizador;
 	private Reloj tarea;
@@ -233,10 +233,10 @@ public class Gui extends JFrame {
 			}
 
 		}
-		
+
 		this.temporizador = new Timer();
 		this.tarea = new Reloj(this.temporizador, decenaHoras, unidadHoras, decenaMinutos, unidadMinutos, decenaSegundos, unidadSegundos);
-		temporizador.schedule(tarea,0,1);
+		this.temporizador.schedule(tarea,0,1000);
 	}
 
 	private void agregarBotonNumerico(int indice) {
@@ -355,6 +355,7 @@ public class Gui extends JFrame {
 					if(sudoku.juegoTerminado()) {
 
 						temporizador.cancel();
+						temporizador.purge();
 						int opcion = JOptionPane.YES_NO_OPTION;
 						int respuesta = JOptionPane.showConfirmDialog (null, "¡Gano la partida! ¿Desea comenzar otro juego?","Nuevo juego", opcion);
 						setVisible(false);
@@ -369,37 +370,39 @@ public class Gui extends JFrame {
 						JOptionPane.showMessageDialog(null, "Hay algunos errores en el tablero. Ayuda: Los numeros que no cumplen con las reglas del juego estan marcados en rojo", "Verificacion del resultado", JOptionPane.INFORMATION_MESSAGE);
 					}
 				}
-				else
+				else {
 					JOptionPane.showMessageDialog(null, "Por favor complete todas las casillas antes de verificar", "Verificacion del resultado", JOptionPane.INFORMATION_MESSAGE);
+				}
 			}
 			else if(src == "START") {
 
-				if(inicio.getText() == "START") {
-					for(int i=0 ; i<sudoku.getCantFilas() ; i++)
-						for(int j=0 ; j<sudoku.getCantFilas() ; j++)
-							labelsNumeros[i][j].setVisible(true);
+				for(int i=0 ; i<sudoku.getCantFilas() ; i++)
+					for(int j=0 ; j<sudoku.getCantFilas() ; j++)
+						labelsNumeros[i][j].setVisible(true);
 
-					//temporizador = new Timer();
-					//temporizador.schedule(tarea,0,1000);
-					tarea.empezar();
+				//temporizador = new Timer();
+				//temporizador.schedule(tarea,0,1000);
+				tarea.empezar();
+				
+				boton.setIcon(pause);
+				boton.setActionCommand("PAUSE");
+				inicio.setText("Pause");
+				inicio.setForeground(Color.ORANGE);
+				
+			}
+			else if(src == "PAUSE") {
+				for(int i=0 ; i<sudoku.getCantFilas() ; i++)
+					for(int j=0 ; j<sudoku.getCantFilas() ; j++)
+						labelsNumeros[i][j].setVisible(false);
 
-					boton.setIcon(pause);
-					inicio.setText("PAUSE");
-					inicio.setForeground(Color.ORANGE);
-				}
-				else if(inicio.getText() == "PAUSE") {
-					for(int i=0 ; i<sudoku.getCantFilas() ; i++)
-						for(int j=0 ; j<sudoku.getCantFilas() ; j++)
-							labelsNumeros[i][j].setVisible(false);
+				//temporizador.cancel();
+				//temporizador.purge();
+				tarea.pausar();
 
-					//temporizador.cancel();
-					//temporizador.purge();
-					tarea.pausar();
-
-					boton.setIcon(start);
-					inicio.setText("START");
-					inicio.setForeground(Color.GREEN);
-				}
+				boton.setIcon(start);
+				boton.setActionCommand("START");
+				inicio.setText(" Start");
+				inicio.setForeground(Color.GREEN);
 
 			}
 			else if(src.equals("1") || src.equals("2") || src.equals("3") || src.equals("4") || src.equals("5") || src.equals("6") || src.equals("7") || src.equals("8") || src.equals("9")){

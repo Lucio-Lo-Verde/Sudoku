@@ -36,9 +36,9 @@ public class Sudoku {
 			logger.setLevel(Level.INFO);
 		}
 
-		File file = new File("C:\\Users\\Lucio\\Desktop\\workspace\\Sudoku4\\src\\solucion.txt"); //Introduzca la ruta del archivo tablero.txt
+		File file = new File("\\solucion.txt"); //Introduzca la ruta del archivo solucion.txt
 		Scanner sc;
-		int [][] entrada = new int [this.cantFilas][this.cantFilas];
+		int [][] entrada = new int [this.cantFilas][this.cantFilas]; //Aca guardo los valores del archivo de la solucion
 		int cantLineasFile = 0;
 		boolean sePaso = false; //Es verdadero si el archivo de texto no respeta el formato dado
 
@@ -120,33 +120,36 @@ public class Sudoku {
 			e.printStackTrace();
 		}
 
+		//Verifico si el archivo de la solucion respeta el formato dado y ademas, es una solucion valida
 		if(!sePaso && cantLineasFile == this.cantFilas && verificarEntrada(entrada)) {
 
 			this.numIniciales = new int[this.cantFilas][this.cantFilas];
 			Random rand = new Random();
+			int valorFile;
+			int rndInt;
 
 			for (int i=0 ; i<this.cantFilas ; i++) {
 				for(int j=0 ; j<this.cantFilas ; j++) {
 
 					this.tablero[i][j] = new Celda();
+					rndInt = rand.nextInt(3);
 
-					int value = rand.nextInt(3);
-
-					if(this.cantNumInsertados<32 && value==0) {
-						this.tablero[i][j].setValor(entrada[i][j]);
-						this.tablero[i][j].getEntidadGrafica().pintarDeAzul(this.tablero[i][j].getValor().intValue());
-						numIniciales[i][j] = entrada[i][j];
+					//Decido si inserto el valor del archivo de la solucion al tablero
+					if(this.cantNumInsertados<32 && rndInt==0) {
+						valorFile = entrada[i][j];
+						this.tablero[i][j].setValor(valorFile);
+						this.tablero[i][j].getEntidadGrafica().pintarDeAzul(valorFile);
+						numIniciales[i][j] = valorFile;
 						this.cantNumInsertados ++;
 					}
 					else
 						numIniciales[i][j] = -1;
 				}
 			}
-			
-		}
-		else {
+
+		}else {
 			//Mensaje del logger
-			logger.severe("EL ARCHIVO '" + file.getName() + "' NO RESPETA EL FORMATO DADO. TERMINANDO EJECUCION...");
+			logger.severe("EL ARCHIVO '" + file.getName() + "' NO RESPETA EL FORMATO DADO DE UN ARCHIVO DE TEXTO DE UNA SOLUCION DE SUDOKU QUE SEA VALIDA. TERMINANDO EJECUCION...");
 
 			//Cierra la ejecucion del programa
 			System.exit(1);
@@ -182,6 +185,7 @@ public class Sudoku {
 	}
 
 	private boolean estaRepetido(int elem, int fil, int col) {
+		//Este metodo se invocaba cuando en el constructor se insertaban numeros al azar en el tablero
 		//Busca si el numero elem esta en la fila fil, en la columna col o dentro de su respectivo panel de 3x3
 		//Si se da al menos una de las 3 condiciones anteriores,
 		//quiere decir que el numero elem que quiero insertar en el tablero ya a romper con almenos una de las reglas del juego
@@ -226,6 +230,7 @@ public class Sudoku {
 
 			this.juegoTerminado = true; //Asumo que el jugador gano la partida hasta demostrar lo contrario
 
+			//Pinto de blanco todas las celdas que no sean las iniciales (las pintadas en azul)
 			for(int i=0 ; i<this.cantFilas; i++)
 				for(int j=0 ; j<this.cantFilas; j++)
 					if(numIniciales[i][j] == -1)
@@ -267,7 +272,7 @@ public class Sudoku {
 			int primFil;
 			int primCol;
 
-			//Verifico si se repiten los numeros entre los paneles
+			//Verifico si se repiten los numeros entre los paneles de 3x3
 			while(filaInicial<this.cantFilas) {
 				while(colInicial<this.cantFilas) {
 
@@ -328,7 +333,7 @@ public class Sudoku {
 			int primFil;
 			int primCol;
 
-			//Verifico si se repiten los numeros entre los paneles
+			//Verifico si se repiten los numeros entre los paneles de 3x3
 			while(filaInicial<this.cantFilas && esValida) {
 				while(colInicial<this.cantFilas && esValida) {
 
