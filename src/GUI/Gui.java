@@ -2,6 +2,7 @@ package GUI;
 
 import java.awt.Color;
 import java.awt.EventQueue;
+import java.awt.Graphics;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -33,7 +34,7 @@ import java.util.TimerTask;
 
 public class Gui extends JFrame {
 
-	private JPanel contentPane;
+	private FondoPanel contentPane;
 	private JLabel [][] labelsNumeros;
 	private Sudoku sudoku;
 	private static final int ancho = 600;
@@ -69,15 +70,14 @@ public class Gui extends JFrame {
 
 		this.setTitle("Sudoku");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+		
 		setBounds(100, 100, ancho, largo);
-		contentPane = new JPanel();
+		contentPane = new FondoPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 
 		sudoku = new Sudoku();
 		contentPane.setLayout(new GridLayout(sudoku.getCantFilas()+4, sudoku.getCantFilas()+4, 0, 0));
-		contentPane.setBackground(Color.BLACK);
 
 		ImageIcon intersec = new ImageIcon(this.getClass().getResource("/img/intersec2.png"));
 		ImageIcon linea = new ImageIcon(this.getClass().getResource("/img/linHor.png"));
@@ -444,4 +444,21 @@ public class Gui extends JFrame {
 			}
 		}
 	}
+	
+	private class FondoPanel extends JPanel{
+		
+		private Image imagen;
+		
+		@Override
+		public void paint(Graphics grafico) {
+			
+			imagen = new ImageIcon(this.getClass().getResource("/img/space.png")).getImage();
+			grafico.drawImage(imagen, 0, 0, getWidth(), getHeight(), this);
+			setOpaque(false);
+			super.paint(grafico);
+			setVisible(true);
+		}
+		
+	}
+	
 }

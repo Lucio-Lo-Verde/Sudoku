@@ -36,7 +36,7 @@ public class Sudoku {
 			logger.setLevel(Level.INFO);
 		}
 
-		File file = new File("\\solucion.txt"); //Introduzca la ruta del archivo solucion.txt
+		File file = new File("src\\solucion.txt"); //Introduzca la ruta del archivo tablero.txt
 		Scanner sc;
 		int [][] entrada = new int [this.cantFilas][this.cantFilas]; //Aca guardo los valores del archivo de la solucion
 		int cantLineasFile = 0;
